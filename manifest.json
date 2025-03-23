@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Ford Extended Order Details",
+  "version": "1.0.2",
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "host_permissions": [
+    "https://www.ford.com/*"
+  ],
+  "background": {},
+  "content_scripts": [
+    {
+      "matches": ["https://www.ford.com/myaccount/vehicle-order-tracking*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
