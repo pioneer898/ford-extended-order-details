@@ -72,14 +72,44 @@ class ExtendedDetails {
 
   getEtaString(){
     const t = this;
-    if(t.orderData.lastCompletedStatus.eta.etaStartDate == '1990-01-01'){
+    if(t.orderData.lastCompletedStatus.eta.etaStartDate == '1990-01-01'|| t.orderData.lastCompletedStatus.eta.etaStartDate == '1980-01-01'){
       return '--';
     } else {
       return `${t.formatDate(t.orderData.lastCompletedStatus.eta.etaStartDate)} - ${t.formatDate(t.orderData.lastCompletedStatus.eta.etaEndDate)} (Code ${t.orderData.lastCompletedStatus.eta.etaReasonCode})`;
     }
   }
 
-  async addExtendedDetails (){
+  getDaysSinceDate(startDate,endDate){
+    let diffMs = endDate - startDate;
+    let diffDays =  Math.round(diffMs / (1000 * 60 * 60 * 24));
+    return diffDays;
+  }
+
+  addDayCounts(){
+    const t = this;
+    let timelineDates = document.querySelectorAll('ul.vehicle-order-tracking__tracker--dates li');
+    let isFirst = true;
+    let firstDate;
+    let lastDate;
+    timelineDates.forEach(e=>{
+      let originalString = e.innerHTML;
+      let thisDate = Date.parse(originalString);
+      if(isFirst){
+        firstDate = thisDate;
+        isFirst = false;
+      } else {
+        e.innerHTML = `
+          <div class="date-days">
+            <span>${originalString}</span>
+            <span class="days-since-last">+${t.getDaysSinceDate(lastDate,thisDate)} days (${t.getDaysSinceDate(firstDate,thisDate)})</span>
+          </div>
+        `;
+      }
+      lastDate = thisDate;
+    });
+  }
+
+  async addExtendedDetails(){
     const t = this;
     await pageReady();
     let ownershipLinksContainer = document.querySelector('.ownership-links-container');
@@ -103,6 +133,8 @@ class ExtendedDetails {
     for(let e=0;e<rows.length;e++){
       rows[e].style.gridTemplateColumns  = '14rem auto';
     };
+
+    t.addDayCounts();
   }
 };
 

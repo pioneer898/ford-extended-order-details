@@ -1,0 +1,13 @@
+div.date-days{
+  display: flex;
+  flex-direction: column;
+}
+
+span.days-since-last{
+  font-size: 0.7em;
+}
+
+span.days-since-first{
+  font-size: 0.7em;
+  color: gray;
+}
